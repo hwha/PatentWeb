@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+    <style type="text/css">
+    body {
+        margin: 0;
+        padding: 0;
+        border: 0;
+    }
+    </style>
+    <link rel="stylesheet" type="text/css" href="/3d-force-graph/3d-force-graph.css">
+    <script defer type="text/javascript" src="//unpkg.com/3d-force-graph"></script>
+    <script defer type="text/javascript">
+    window.onload = (event) => {
+        console.log(event);
+        // Random tree
+        const N = 300;
+        const gData = {
+          nodes: [...Array(N).keys()].map(i => ({ id: i })),
+          links: [...Array(N).keys()]
+            .filter(id => id)
+            .map(id => ({
+              source: id,
+              target: Math.round(Math.random() * (id-1))
+            }))
+        };
+
+        const Graph = ForceGraph3D()
+          (document.getElementById('3d-graph'))
+            .graphData(gData);
+    }
+    </script>
+</head>
+<body>
+    <div id="3d-graph"></div>
+</body>
+</html>

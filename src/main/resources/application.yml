@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:agensgraph://localhost:5432/formula_graph?autoReconnect=true
+    username: hwha
+    password: hwha123!
+    driver-class-name: net.bitnine.agensgraph.Driver
+  http:    encoding:      charset: UTF-8  thymeleaf:    encoding: UTF-8
+server:  tomcat:    uri-encoding: UTF-8
+mybatis:  configuration:    map-underscore-to-camel-case: true  mapper-locations: classpath:/mappers/*.xml
