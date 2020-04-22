@@ -5,8 +5,53 @@
 
 <mapper namespace="net.bitnine.mapper.AgensMapper">
 
-    <select id="selectCells" resultMap="map">
-        MATCH(c:cell) RETURN c LIMIT 10
+    <select id="selectSheets" resultType="map">
+        MATCH(s:sheet)
+        RETURN s.index as group, s.index + '@' + s.name as id, s.name as label
+    </select>
+
+    <select id="selectCells" resultType="map">
+        MATCH(s:sheet) - [e:contains_of] -> (c:cell)
+        RETURN s.index as group, s.index + '@' + c.address as id, c.address as label
+    </select>
+
+    <select id="selectNames" resultType="map">
+        MATCH(s:sheet)
+        WITH count(s) as last_sheet_group
+        MATCH(cn:cell_name)
+        RETURN last_sheet_group + cn.index as group, cn.formula + '@' + cn.name as id, cn.formula as name
+    </select>
+
+    <select id="selectConnectionInfo" resultType="map">
+    <![CDATA[
+        MATCH(s:sheet) - [e:contains_of] -> (c:cell)
+        RETURN s.index + '@' + s.name as source, s.index + '@' + c.address as target
+        UNION ALL
+        MATCH(s:sheet) - [e:contains_of] -> (c:cell)
+        MATCH(c) <- [e1:parts_of] - (cn:cell_name)
+        MATCH(s2:sheet) - [e2:contains_of] -> (c1:cell) - [f:in_formulas] -> (c2:cell) <- [e3:contains_of] - (s1:sheet)
+            WHERE s2.name = s.name
+            AND c1.address = c.address
+        RETURN distinct s.index + '@' + c.address as source, s1.index + '@' + c2.address as target
+        UNION ALL
+        MATCH(cn:cell_name) - [e:parts_of] -> (c:cell) <- [e1:contains_of] - (s:sheet)
+        RETURN distinct cn.formula + '@' + cn.name as source, s.index + '@' + c.address as target
+    ]]>
+    </select>
+
+    <select id="selectTree" resultType="map">
+    <![CDATA[
+        MATCH(s:sheet)
+        RETURN COUNT(*) as size, s.index + '' AS path
+        UNION ALL
+        MATCH(s:sheet) - [e:contains_of] -> (c:cell)
+        RETURN COUNT(*) as size, s.index + '/' + c.address AS path
+        UNION ALL
+        MATCH(s:sheet) - [e:contains_of] -> (c:cell) - [f:in_formulas] -> (c1:cell)
+        WITH COUNT(*) as size, s, c
+        MATCH(c) - [:in_formulas] -> (c2:cell)
+        RETURN size, s.index + '/' + c.address + '/' + c2.address AS path
+    ]]>
     </select>
 
 </mapper>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+    <style type="text/css">
+    body {
+        margin: 0;
+        padding: 0;
+        border: 0;
+    }
+    </style>
+    <link rel="stylesheet" type="text/css"
+        href="/3d-force-graph/3d-force-graph.css">
+
+    <script defer type="text/javascript" src="//unpkg.com/3d-force-graph"></script>
+    <script defer type="text/javascript">
+        window.onload = (event) => {
+            // graph config
+            const graph = ForceGraph3D()
+                .backgroundColor('#101020')
+                .linkColor(() => 'rgba(255,255,255,0.2)')
+                .linkAutoColorBy(d => data.nodes[d.source].group)
+                .nodeId('id')
+                .nodeLabel('label')
+                .nodeAutoColorBy('group');
+
+            // Decrease repel intensity
+            fetch('/api/graph')
+            .then(r => r.json())
+            .then(data => {
+                graph(document.getElementById('graph')).graphData({ nodes: data.nodes, links: data.links });
+            });
+        }
+    </script>
+</head>
+<body>
+    <div id="graph"></div>
+</body>
+</html>

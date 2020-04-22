@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:agensgraph://localhost:5432/formula_graph?autoReconnect=true
-    username: hwha
-    password: hwha123!
+    url: jdbc:agensgraph://192.168.0.74:5432/formula_graph?autoReconnect=true
+    username: patent
+    password: patent123!
     driver-class-name: net.bitnine.agensgraph.Driver
   http:    encoding:      charset: UTF-8  thymeleaf:    encoding: UTF-8
 server:  tomcat:    uri-encoding: UTF-8

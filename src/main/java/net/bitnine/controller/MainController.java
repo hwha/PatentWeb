@@ -10,4 +10,9 @@ public class MainController {
     public String moveMain() {
         return "index";
     }
+
+    @GetMapping("/graph")
+    public String moveGraph() {
+        return "draw-graph";
+    }
 }
